@@ -1,29 +1,32 @@
 const track = document.querySelector(".slider-track");
-const items = document.querySelectorAll(".slider-item");
-
 track.innerHTML += track.innerHTML;
 
-let currentX = 0;
-let speed = 0.5;
+let current = 0;
+let target = 0;
+let speed = 0.3;
+let ease = 0.05;
 let totalWidth = 0;
 
 function calculateWidth() {
     totalWidth = 0;
     document.querySelectorAll(".slider-item").forEach((item) => {
-        totalWidth += item.offsetWidth + 60;
+        totalWidth += item.offsetWidth + 100;
     });
 }
 
 calculateWidth();
 
 function animate() {
-    currentX -= speed;
+    target -= speed;
 
-    if (Math.abs(currentX) >= totalWidth / 2) {
-        currentX = 0;
+    if (Math.abs(target) >= totalWidth / 2) {
+        target = 0;
+        current = 0;
     }
 
-    gsap.set(track, { x: currentX });
+    current += (target - current) * ease;
+
+    gsap.set(track, { x: current });
 
     updateDepth();
 
@@ -39,15 +42,25 @@ function updateDepth() {
         const distance = Math.abs(center - itemCenter);
         const maxDistance = window.innerWidth / 2;
 
-        const scale = 1 - (distance / maxDistance) * 0.4;
-        const rotateY = (center - itemCenter) / 40;
+        const progress = distance / maxDistance;
+
+        const scale = 1 - progress * 0.35;
+        const rotateY = (center - itemCenter) / 30;
+        const opacity = 1 - progress * 0.6;
+        const blur = progress * 8;
+        const floatY = Math.sin(Date.now() * 0.001 + itemCenter) * 8;
 
         gsap.to(item, {
-            scale: scale,
-            rotateY: rotateY,
-            duration: 0.5,
-            ease: "power2.out",
+            scale,
+            rotateY,
+            opacity,
+            y: floatY,
+            filter: `blur(${blur}px)`,
+            duration: 0.6,
+            ease: "power3.out",
         });
+
+        item.style.setProperty("--glow", 1 - progress * 2);
     });
 }
 
