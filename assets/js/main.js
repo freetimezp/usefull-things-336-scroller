@@ -3,7 +3,7 @@ track.innerHTML += track.innerHTML;
 
 let current = 0;
 let target = 0;
-let speed = 0.3;
+let speed = 4.3;
 let ease = 0.05;
 let totalWidth = 0;
 
@@ -56,7 +56,7 @@ function updateDepth() {
             opacity,
             y: floatY,
             filter: `blur(${blur}px)`,
-            duration: 0.6,
+            duration: 1.6,
             ease: "power3.out",
         });
 
